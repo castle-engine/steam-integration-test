@@ -79,6 +79,8 @@ begin
   Notifications.Anchor(hpMiddle);
   Notifications.Anchor(vpMiddle);
   Notifications.TextAlignment := hpMiddle; // looks best, when anchor is also in the middle
+  Notifications.MaxMessages := 20;
+  Notifications.Timeout := 20000;
   Window.Controls.InsertFront(Notifications);
 
   SteamInitialize;
