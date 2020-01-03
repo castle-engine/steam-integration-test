@@ -34,21 +34,40 @@ var
 procedure DoInitialize;
 var
   { TODO: These should probably be internal variables within SteamApi, and wrapped by accessors. }
-  SteamUtilsPtr, SteamUserPtr: Pointer;
+  SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
+  SteamUser: THSteamUser;
+  SteamPipe: THSteamPipe;
+  LoginSuccessfull: Boolean;
 begin
   if SteamWorking then
   begin
     WriteLnLog('Steam is working!');
 
-    SteamUtilsPtr := SteamInternal_CreateInterface(STEAMUTILS_INTERFACE_VERSION);
-    WriteLnLog('SteamUtilsPtr %s', [PointerToStr(SteamUtilsPtr)]);
+    SteamClientPtr := SteamInternal_CreateInterface(STEAMCLIENT_INTERFACE_VERSION);
+    if SteamClientPtr = nil then
+      raise Exception.Create('Cannot get SteamClient pointer');
 
-    SteamUserPtr := SteamInternal_CreateInterface(STEAMUSER_INTERFACE_VERSION);
-    WriteLnLog('SteamUserPtr %s', [PointerToStr(SteamUserPtr)]);
+    SteamPipe := SteamAPI_ISteamClient_CreateSteamPipe(SteamClientPtr);
+
+    SteamUtilsPtr := SteamAPI_ISteamClient_GetISteamUtils(SteamClientPtr, SteamPipe, STEAMUTILS_INTERFACE_VERSION);
+    // This SteamInternal_CreateInterface will return nil, you need to use SteamAPI_ISteamClient_GetISteamUtils instead
+    //SteamUtilsPtr := SteamInternal_CreateInterface(STEAMUTILS_INTERFACE_VERSION);
+
+    if SteamUtilsPtr = nil then
+      raise Exception.Create('Cannot get SteamUtils pointer');
+
+    SteamUser := SteamAPI_ISteamClient_ConnectToGlobalUser(SteamClientPtr, SteamPipe);
+
+    SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
+
+    // This SteamInternal_CreateInterface will return nil, you need to use SteamAPI_ISteamClient_GetISteamUser instead
+    // SteamUserPtr := SteamInternal_CreateInterface(STEAMUSER_INTERFACE_VERSION);
+    if SteamUserPtr = nil then
+      raise Exception.Create('Cannot get SteamUser pointer');
 
     WriteLnLog('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]);
-    if SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr) then
-      WriteLnLog('Login successful');
+    LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
+    WriteLnLog('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]);
   end;
 end;
 
