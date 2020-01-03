@@ -2,4 +2,9 @@
 <project name="steam_cge"
   standalone_source="steam_cge.lpr"
 >
+  <compiler_options>
+    <custom_options>
+      <option>@fpc-options.cfg</option>
+    </custom_options>
+  </compiler_options>
 </project>

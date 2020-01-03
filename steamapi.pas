@@ -30,7 +30,13 @@ uses
   Classes, SysUtils, CTypes;
 
 const
-  SteamLib = 'steam_api64';
+  SteamLib =
+    {$if defined(MSWINDOWS) and defined(CPUX86_64)}
+    'steam_api64'
+    {$else}
+    'steam_api'
+    {$endif}
+  ;
 
   STEAMCLIENT_INTERFACE_VERSION = 'SteamClient019';
   STEAMCONTROLLER_INTERFACE_VERSION = 'SteamController007';
