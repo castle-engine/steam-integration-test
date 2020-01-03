@@ -24,21 +24,23 @@ program steam_cge;
 
 uses
   SysUtils,
-  CastleWindow, CastleApplicationProperties, CastleLog, CastleStringUtils,
+  CastleWindow, CastleApplicationProperties, CastleLog, CastleStringUtils, CastleNotifications,
+  CastleUIControls,
   SteamApi;
 
 var
   Window: TCastleWindowBase;
+  Notifications: TCastleNotifications;
   SteamWorking: Boolean;
 
-procedure DoInitialize;
+procedure SteamInitialize;
 var
-  { TODO: These should probably be internal variables within SteamApi, and wrapped by accessors. }
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
   SteamUser: THSteamUser;
   SteamPipe: THSteamPipe;
   LoginSuccessfull: Boolean;
 begin
+  SteamWorking := SteamAPI_Init();
   if SteamWorking then
   begin
     WriteLnLog('Steam is working!');
@@ -65,18 +67,36 @@ begin
     if SteamUserPtr = nil then
       raise Exception.Create('Cannot get SteamUser pointer');
 
-    WriteLnLog('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]);
+    Notifications.Show(Format('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]));
     LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
-    WriteLnLog('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]);
+    Notifications.Show(Format('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]));
   end;
+end;
+
+procedure ApplicationInitialize;
+begin
+  Notifications := TCastleNotifications.Create(Application);
+  Notifications.Anchor(hpMiddle);
+  Notifications.Anchor(vpMiddle);
+  Notifications.TextAlignment := hpMiddle; // looks best, when anchor is also in the middle
+  Window.Controls.InsertFront(Notifications);
+
+  SteamInitialize;
 end;
 
 begin
   ApplicationProperties.ApplicationName := 'cge_steam_test';
   InitializeLog;
-  SteamWorking := SteamAPI_Init();
+
+  { Initializing Steam before OpenGL context is created works too.
+    However, it's less user-friendly (doing it in ApplicationInitialize
+    means that we show "loading" screen when doing it). }
+  // SteamInitialize;
+
   Window := TCastleWindowBase.Create(Application);
-  Application.OnInitialize := @DoInitialize;
+  Application.OnInitialize := @ApplicationInitialize;
   Window.OpenAndRun;
-  SteamAPI_Shutdown();
+
+  if SteamWorking then
+    SteamAPI_Shutdown();
 end.
