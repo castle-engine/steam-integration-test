@@ -7,4 +7,10 @@
       <option>@fpc-options.cfg</option>
     </custom_options>
   </compiler_options>
+  <!-- Path Steam DLL / SO stuff for Windows and Linux -->
+  <package>
+    <include path="steam_api64.dll" />
+    <include path="run.sh" />
+    <include path="libraries/x86_64-linux/" recursive="True" />
+  </package>
 </project>

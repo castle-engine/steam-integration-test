@@ -3,3 +3,5 @@ castle-engine-output
 *.exe
 steam_cge
 *.res
+*.zip
+*.tar.gz
