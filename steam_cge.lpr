@@ -111,7 +111,8 @@ begin
     SteamManager := TSteamManager.Create(Window);
     SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
-    SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr);
+    if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr) then
+      WriteLnLog('Requested user stats and achievements, waiting for callback...');
   end;
 end;
 
