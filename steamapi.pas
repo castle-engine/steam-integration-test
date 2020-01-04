@@ -19,6 +19,8 @@ unit SteamAPI;
 
 interface
 
+{$macro on}
+
 {$ifdef UNIX}
   {$define extdecl := cdecl}
 {$endif}
