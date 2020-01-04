@@ -32,10 +32,10 @@ type
   TSteamManager = class(TComponent)
   public
     Ready: Boolean;
-    procedure OnUserStats(P: Pointer);
+    procedure OnUserStats(Answer: Pointer);
   end;
 
-procedure TSteamManager.OnUserStats(P: Pointer);
+procedure TSteamManager.OnUserStats(Answer: Pointer);
 begin
   Ready := true;
   WriteLnLog('TSteamManager.OnUserStats callback received!');
@@ -46,6 +46,7 @@ var
   Notifications: TCastleNotifications;
   SteamWorking: Boolean;
   SteamManager: TSteamManager;
+  CallbackDispatcher: SteamCallbackDispatcher;
 
 procedure DoUpdate(Container: TUiContainer);
 begin
@@ -59,6 +60,7 @@ var
   SteamUser: THSteamUser;
   SteamPipe: THSteamPipe;
   LoginSuccessfull: Boolean;
+  UserName: AnsiChar;
 begin
   { I'm not exactly sure if it is correct to init Steam API here.
     "The way this overlay works is by hooking into OpenGL functionality.
@@ -109,7 +111,7 @@ begin
     Notifications.Show(Format('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]));
 
     SteamManager := TSteamManager.Create(Window);
-    SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
+    CallbackDispatcher := SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
     if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr) then
       WriteLnLog('Requested user stats and achievements, waiting for callback...');
@@ -144,6 +146,7 @@ begin
   Application.OnInitialize := @ApplicationInitialize;
   Window.OpenAndRun;
 
+  FreeAndNil(CallbackDispatcher);
   if SteamWorking then
     SteamAPI_Shutdown();
 end.
