@@ -51,6 +51,13 @@ begin
     so it should be fine for now }
   SteamWorking := SteamAPI_Init();
 
+  {if SteamAPI_RestartAppIfNecessary() then
+  begin
+    WriteLn('The app was run through exe - restarting through Steam. DRM will do this automatically.');
+    Halt(0);
+  end else
+    WriteLn('The Steam client is running and no restart is necessary');}
+
   if SteamWorking then
   begin
     WriteLnLog('Steam is working!');
@@ -80,6 +87,8 @@ begin
     Notifications.Show(Format('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]));
     LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
     Notifications.Show(Format('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]));
+
+    SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr);
   end;
 end;
 
