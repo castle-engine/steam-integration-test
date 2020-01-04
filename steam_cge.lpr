@@ -73,10 +73,10 @@ begin
 
   {if SteamAPI_RestartAppIfNecessary() then
   begin
-    WriteLn('The app was run through exe - restarting through Steam. DRM will do this automatically.');
+    WriteLnLog('The app was run through exe - restarting through Steam. DRM will do this automatically.');
     Halt(0);
   end else
-    WriteLn('The Steam client is running and no restart is necessary');}
+    WriteLnLog('The Steam client is running and no restart is necessary');}
 
   if SteamWorking then
   begin
