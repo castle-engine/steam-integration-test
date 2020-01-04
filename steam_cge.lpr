@@ -33,6 +33,12 @@ var
   Notifications: TCastleNotifications;
   SteamWorking: Boolean;
 
+procedure DoUpdate(Container: TUiContainer);
+begin
+  if SteamWorking then
+    SteamAPI_RunCallbacks();
+end;
+
 procedure SteamInitialize;
 var
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
@@ -103,6 +109,8 @@ begin
   Window.Controls.InsertFront(Notifications);
 
   SteamInitialize;
+
+  Window.OnUpdate := @DoUpdate;
 end;
 
 begin

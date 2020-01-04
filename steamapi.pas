@@ -99,6 +99,8 @@ function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; extdecl; 
 
 function SteamAPI_ISteamUser_BLoggedOn(InstancePtr: Pointer): CBool; extdecl; external SteamLib;
 
+procedure SteamAPI_RunCallbacks(); external SteamLib;
+
 implementation
 
 end.
