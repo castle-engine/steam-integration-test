@@ -5,3 +5,7 @@ steam_cge
 *.res
 *.zip
 *.tar.gz
+
+lib
+backup
+*.lps
