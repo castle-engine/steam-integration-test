@@ -40,7 +40,17 @@ var
   SteamPipe: THSteamPipe;
   LoginSuccessfull: Boolean;
 begin
+  { I'm not exactly sure if it is correct to init Steam API here.
+    "The way this overlay works is by hooking into OpenGL functionality.
+    This means that in order for the overlay rendering to work correctly,
+    SteamAPI_Init must be called before any rendering initalization."
+    This is a quote from "Multiplayer Game Programming: Architecting Networked Games"
+    but for some reason I was sure I read something like this in the documentation
+    (couldn't find the source now, so maybe I'm wrong)
+    Anyway, Steam overlay works for me when initialized this way,
+    so it should be fine for now }
   SteamWorking := SteamAPI_Init();
+
   if SteamWorking then
   begin
     WriteLnLog('Steam is working!');
