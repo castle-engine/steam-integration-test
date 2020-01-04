@@ -23,15 +23,29 @@ program steam_cge;
 {.$apptype GUI}
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   CastleWindow, CastleApplicationProperties, CastleLog, CastleStringUtils, CastleNotifications,
   CastleUIControls,
-  SteamApi;
+  SteamApi, SteamCallback;
+
+type
+  TSteamManager = class(TComponent)
+  public
+    Ready: Boolean;
+    procedure OnUserStats(P: Pointer);
+  end;
+
+procedure TSteamManager.OnUserStats(P: Pointer);
+begin
+  Ready := true;
+  WriteLnLog('TSteamManager.OnUserStats callback received!');
+end;
 
 var
   Window: TCastleWindowBase;
   Notifications: TCastleNotifications;
   SteamWorking: Boolean;
+  SteamManager: TSteamManager;
 
 procedure DoUpdate(Container: TUiContainer);
 begin
@@ -93,6 +107,9 @@ begin
     Notifications.Show(Format('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]));
     LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
     Notifications.Show(Format('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]));
+
+    SteamManager := TSteamManager.Create(Window);
+    SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
     SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr);
   end;

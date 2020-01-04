@@ -42,6 +42,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="SteamAPI"/>
       </Unit>
+      <Unit>
+        <Filename Value="SteamCallback.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
