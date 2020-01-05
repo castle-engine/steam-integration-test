@@ -130,9 +130,11 @@ function SteamAPI_ISteamClient_CreateSteamPipe(InstancePtr: Pointer): THSteamPip
 procedure SteamAPI_ISteamClient_SetWarningMessageHook(InstancePtr: Pointer; pFunction: TSteamAPIWarningMessageHook); steam_call; external SteamLib;
 function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamPipe: THSteamPipe): THSteamUser; steam_call; external SteamLib;
 function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
+function SteamAPI_ISteamClient_GetISteamUserStats(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 
 function SteamAPI_ISteamUserStats_SetAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_GetAchievement(InstancePtr: Pointer; pchName: PAnsiChar; pbAchieved: CBool): CBool; steam_call; external SteamLib;
+function SteamAPI_ISteamUserStats_GetAchievementName(InstancePtr: Pointer; iAchievement: CUInt32): PAnsiChar; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_ClearAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_RequestCurrentStats(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
 

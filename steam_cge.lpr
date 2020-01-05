@@ -52,17 +52,22 @@ var
   SteamWorking: Boolean;
   SteamManager: TSteamManager;
   CallbackDispatcher: SteamCallbackDispatcher;
-  SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
+  SteamClientPtr, SteamUtilsPtr, SteamUserPtr, SteamUserStatsPtr: Pointer;
 
 procedure DoUpdate(Container: TUiContainer);
 var
   AchReceived: Boolean;
+  AchNamePtr: PAnsiChar;
+  AchName: AnsiChar;
 begin
   if SteamWorking then
   begin
     SteamAPI_RunCallbacks();
-    if SteamAPI_ISteamUserStats_GetAchievement(SteamClientPtr, @AchievementString, AchReceived) then
+    if SteamAPI_ISteamUserStats_GetAchievement(SteamUserStatsPtr, @AchievementString, AchReceived) then
       WriteLnLog('Achievement received without callback!');
+    AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
+    {if AchNamePtr <> nil then
+      WriteLnLog(AchNamePtr^);}
   end;
 end;
 
@@ -117,6 +122,7 @@ begin
       raise Exception.Create('Cannot get SteamUtils pointer');
 
     SteamUser := SteamAPI_ISteamClient_ConnectToGlobalUser(SteamClientPtr, SteamPipe);
+    WriteLnLog('SteamUser', IntToStr(SteamUser));
 
     SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
 
@@ -129,10 +135,12 @@ begin
     LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
     Notifications.Show(Format('Steam login successfull: %s', [BoolToStr(LoginSuccessfull, true)]));
 
+    SteamUserStatsPtr := SteamAPI_ISteamClient_GetISteamUserStats(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
+
     SteamManager := TSteamManager.Create(Window);
     CallbackDispatcher := SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
-    if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamClientPtr) then
+    if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamUserStatsPtr) then
       WriteLnLog('Requested user stats and achievements, waiting for callback...');
   end;
 end;
