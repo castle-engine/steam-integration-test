@@ -22,6 +22,8 @@ program steam_cge;
 
 {.$apptype GUI}
 
+{$I steam.inc}
+
 uses
   SysUtils, Classes,
   CastleWindow, CastleApplicationProperties, CastleLog, CastleStringUtils, CastleNotifications,
@@ -54,15 +56,19 @@ begin
     SteamAPI_RunCallbacks();
 end;
 
+procedure SteamWarning(nSeverity: Integer; pchDebugText: PAnsiChar); steam_call;
+begin
+  WritelnWarning('Steam', pchDebugText);
+end;
+
 procedure SteamInitialize;
 var
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
   SteamUser: THSteamUser;
   SteamPipe: THSteamPipe;
   LoginSuccessfull: Boolean;
-  UserName: AnsiChar;
 begin
-  { I'm not exactly sure if it is correct to init Steam API here.
+  { Eugene notes: I'm not exactly sure if it is correct to init Steam API here.
     "The way this overlay works is by hooking into OpenGL functionality.
     This means that in order for the overlay rendering to work correctly,
     SteamAPI_Init must be called before any rendering initalization."
@@ -70,7 +76,9 @@ begin
     but for some reason I was sure I read something like this in the documentation
     (couldn't find the source now, so maybe I'm wrong)
     Anyway, Steam overlay works for me when initialized this way,
-    so it should be fine for now }
+    so it should be fine for now
+
+    TODO: Remove this comment in the final version, decide one way or another. }
   SteamWorking := SteamAPI_Init();
 
   {if SteamAPI_RestartAppIfNecessary() then
@@ -87,6 +95,8 @@ begin
     SteamClientPtr := SteamInternal_CreateInterface(STEAMCLIENT_INTERFACE_VERSION);
     if SteamClientPtr = nil then
       raise Exception.Create('Cannot get SteamClient pointer');
+
+    SteamAPI_ISteamClient_SetWarningMessageHook(SteamClientPtr, @SteamWarning);
 
     SteamPipe := SteamAPI_ISteamClient_CreateSteamPipe(SteamClientPtr);
 

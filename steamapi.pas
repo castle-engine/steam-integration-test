@@ -19,14 +19,7 @@ unit SteamAPI;
 
 interface
 
-{$macro on}
-
-{$ifdef UNIX}
-  {$define extdecl := cdecl}
-{$endif}
-{$ifdef MSWINDOWS}
-  {$define extdecl := cdecl}
-{$endif}
+{$I steam.inc}
 
 uses
   Classes, SysUtils, CTypes;
@@ -117,38 +110,38 @@ const
   k_iClientVideoCallbacks = 4600;
 
 type
-  TSteamAPIWarningMessageHook = procedure (nSeverity: Integer; pchDebugText: PAnsiChar); extdecl;
+  TSteamAPIWarningMessageHook = procedure (nSeverity: Integer; pchDebugText: PAnsiChar); steam_call;
   THSteamPipe = CInt32;
   THSteamUser = CInt32;
 
-function SteamAPI_Init(): CBool; extdecl; external SteamLib;
-procedure SteamAPI_Shutdown(); extdecl; external SteamLib;
-function SteamAPI_RestartAppIfNecessary(): CBool; extdecl; external SteamLib;
+function SteamAPI_Init(): CBool; steam_call; external SteamLib;
+procedure SteamAPI_Shutdown(); steam_call; external SteamLib;
+function SteamAPI_RestartAppIfNecessary(): CBool; steam_call; external SteamLib;
 
 { Needed to get InstancePtr for SteamAPI_Ixxx functions.
   As ver, pass one of xxx_INTERFACE_VERSION constants.
   Thanks to https://www.pascalgamedevelopment.com/showthread.php?32674-Steam-wrapper-exploring-options }
-function SteamInternal_CreateInterface(ver: PAnsiChar): Pointer; extdecl; external SteamLib;
+function SteamInternal_CreateInterface(ver: PAnsiChar): Pointer; steam_call; external SteamLib;
 
 // Interface routines (translated from steamworks_sdk_146/sdk/public/steam/steam_api_flat.h).
 
-function SteamAPI_ISteamClient_GetISteamUtils(InstancePtr: Pointer; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; extdecl; external SteamLib;
-function SteamAPI_ISteamClient_CreateSteamPipe(InstancePtr: Pointer): THSteamPipe; extdecl; external SteamLib;
-procedure SteamAPI_ISteamClient_SetWarningMessageHook(InstancePtr: Pointer; pFunction: TSteamAPIWarningMessageHook); extdecl; external SteamLib;
-function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamPipe: THSteamPipe): THSteamUser; extdecl; external SteamLib;
-function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; extdecl; external SteamLib;
+function SteamAPI_ISteamClient_GetISteamUtils(InstancePtr: Pointer; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
+function SteamAPI_ISteamClient_CreateSteamPipe(InstancePtr: Pointer): THSteamPipe; steam_call; external SteamLib;
+procedure SteamAPI_ISteamClient_SetWarningMessageHook(InstancePtr: Pointer; pFunction: TSteamAPIWarningMessageHook); steam_call; external SteamLib;
+function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamPipe: THSteamPipe): THSteamUser; steam_call; external SteamLib;
+function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 
-function SteamAPI_ISteamUserStats_SetAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; extdecl; external SteamLib;
-function SteamAPI_ISteamUserStats_ClearAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; extdecl; external SteamLib;
-function SteamAPI_ISteamUserStats_RequestCurrentStats(InstancePtr: Pointer): CBool; extdecl; external SteamLib;
+function SteamAPI_ISteamUserStats_SetAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
+function SteamAPI_ISteamUserStats_ClearAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
+function SteamAPI_ISteamUserStats_RequestCurrentStats(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
 
-function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; extdecl; external SteamLib;
+function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
 
-function SteamAPI_ISteamUser_BLoggedOn(InstancePtr: Pointer): CBool; extdecl; external SteamLib;
+function SteamAPI_ISteamUser_BLoggedOn(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
 
 procedure SteamAPI_RunCallbacks(); external SteamLib;
-procedure SteamAPI_RegisterCallback(pCallback: Pointer; iCallback: Integer); extdecl; external SteamLib;
-procedure SteamAPI_UnregisterCallback(pCallback: Pointer); extdecl; external SteamLib;
+procedure SteamAPI_RegisterCallback(pCallback: Pointer; iCallback: Integer); steam_call; external SteamLib;
+procedure SteamAPI_UnregisterCallback(pCallback: Pointer); steam_call; external SteamLib;
 
 implementation
 
