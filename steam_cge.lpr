@@ -52,6 +52,7 @@ var
   SteamWorking: Boolean;
   SteamManager: TSteamManager;
   CallbackDispatcher: SteamCallbackDispatcher;
+  GameOverlayActivatedDispatcher: SteamCallbackDispatcher;
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr, SteamUserStatsPtr: Pointer;
 
 procedure DoUpdate(Container: TUiContainer);
@@ -124,13 +125,15 @@ begin
     SteamUser := SteamAPI_ISteamClient_ConnectToGlobalUser(SteamClientPtr, SteamPipe);
 
     SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
-    WriteLnLog('SteamUser', IntToStr(SteamAPI_ISteamUser_GetSteamID(SteamUserPtr)));
-
 
     // This SteamInternal_CreateInterface will return nil, you need to use SteamAPI_ISteamClient_GetISteamUser instead
     // SteamUserPtr := SteamInternal_CreateInterface(STEAMUSER_INTERFACE_VERSION);
     if SteamUserPtr = nil then
       raise Exception.Create('Cannot get SteamUser pointer');
+
+    SteamUser := SteamAPI_ISteamUser_GetHSteamUser(SteamUserPtr);
+    SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
+    WriteLnLog('SteamAPI_ISteamUser_GetSteamID', IntToStr(SteamAPI_ISteamUser_GetSteamID(SteamUserPtr)));
 
     Notifications.Show(Format('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]));
     LoginSuccessfull := SteamAPI_ISteamUser_BLoggedOn(SteamUserPtr);
@@ -139,7 +142,9 @@ begin
     SteamUserStatsPtr := SteamAPI_ISteamClient_GetISteamUserStats(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
 
     SteamManager := TSteamManager.Create(Window);
-    CallbackDispatcher := SteamCallbackDispatcher.Create(SteamStatsCallbackID, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
+    CallbackDispatcher := SteamCallbackDispatcher.Create(k_iSteamUserStatsCallbacks + 1, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
+
+    GameOverlayActivatedDispatcher := SteamCallbackDispatcher.Create(k_iSteamFriendsCallbacks + 31, @SteamManager.OnUserStats, SizeOf(Steam_GameOverlayActivated));
 
     if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamUserStatsPtr) then
       WriteLnLog('Requested user stats and achievements, waiting for callback...');

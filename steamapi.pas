@@ -132,6 +132,8 @@ function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamP
 function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 function SteamAPI_ISteamClient_GetISteamUserStats(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 
+function SteamAPI_ISteamUser_GetHSteamUser(InstancePtr: Pointer): THSteamUser; steam_call; external SteamLib;
+
 function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
 
 function SteamAPI_ISteamUserStats_SetAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;

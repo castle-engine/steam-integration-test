@@ -66,6 +66,11 @@ Type
 		steamID:SteamID;	// The user for whom the stats are retrieved for
 	End;
 
+  PSteam_GameOverlayActivated = ^Steam_GameOverlayActivated;
+  Steam_GameOverlayActivated = Packed Record
+		m_bActive: uint8;
+	End;
+
   PSteam_LeaderboardScoresDownloaded = ^Steam_LeaderboardScoresDownloaded;
 	Steam_LeaderboardScoresDownloaded = Packed Record
 		LeaderboardID:SteamLeaderboard;
