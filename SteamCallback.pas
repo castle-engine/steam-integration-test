@@ -1,6 +1,8 @@
 { copyright Relfos }
 Unit SteamCallback;
 
+{$I steam.inc}
+
 Interface
 
 Uses SteamAPI;
@@ -101,54 +103,30 @@ Type
 
 Implementation
 
+uses CastleLog;
+
 { TSteamCallback }
 
 Var
   MyCallbackVTable: TCCallbackBaseVTable;
 
-{$IFDEF CPU64}
-Procedure MySteamCallback_Run(pvParam: Pointer; pSelf: PCCallbackInt);
+Procedure MySteamCallback_Run(pvParam: Pointer; pSelf: PCCallbackInt); steam_call;
 Begin
+  WritelnLog('MySteamCallback_Run');
   pSelf^._Dispatcher._Callback(Pointer(pvParam));
 End;
 
-Procedure MySteamCallback_Run_2(myself, pvParam: PCCallbackInt);
+Procedure MySteamCallback_Run_2(myself, pvParam: PCCallbackInt); steam_call;
 Begin
+  WritelnLog('MySteamCallback_Run_2');
   Myself^._Dispatcher._Callback(Pointer(pvParam));
 End;
 
-Function MySteamCallback_GetCallbackSizeBytes(myself: PCCallbackInt):Integer;
+Function MySteamCallback_GetCallbackSizeBytes(myself: PCCallbackInt):Integer; steam_call;
 Begin
+  WritelnLog('MySteamCallback_GetCallbackSizeBytes');
   Result := Myself^._Dispatcher._PropSize;
 End;
-{$ELSE}
-{$IFDEF LINUX}
-Procedure MySteamCallback_Run(pSelf: PCCallbackInt; pvParam: Pointer); Cdecl; {$ELSE}
-Procedure MySteamCallback_Run(pvParam: Pointer;  pSelf: PCCallbackInt); Pascal;{$ENDIF}
-Begin
-  pSelf._Dispatcher._Callback(Pointer(pvParam));
-End;
-
-Procedure MySteamCallback_Run_2(pvParam: PCCallbackInt); Pascal;
-Var
-  myself: PCCallbackInt;
-Begin
-Asm
-  mov myself, ECX;
-End;
-  Myself._Dispatcher._Callback(Pointer(pvParam));
-End;
-
-Function MySteamCallback_GetCallbackSizeBytes:Integer; Pascal;
-Var
-  myself: PCCallbackInt;
-Begin
-  Asm
-    mov myself, ECX;
-  End;
-  Result := Myself._Dispatcher._PropSize;
-End;
-{$ENDIF}
 
 Constructor SteamCallbackDispatcher.Create(iCallback:integer; callbackProc:SteamCallbackDelegate; A_propsize: integer);
 Begin
