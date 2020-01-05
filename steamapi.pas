@@ -132,14 +132,15 @@ function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamP
 function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 function SteamAPI_ISteamClient_GetISteamUserStats(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 
+function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
+
 function SteamAPI_ISteamUserStats_SetAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_GetAchievement(InstancePtr: Pointer; pchName: PAnsiChar; pbAchieved: CBool): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_GetAchievementName(InstancePtr: Pointer; iAchievement: CUInt32): PAnsiChar; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_ClearAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_RequestCurrentStats(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
 
-function SteamAPI_ISteamUtils_GetAppID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
-
+function SteamAPI_ISteamUser_GetSteamID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
 function SteamAPI_ISteamUser_BLoggedOn(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
 
 procedure SteamAPI_RunCallbacks(); external SteamLib;

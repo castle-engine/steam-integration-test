@@ -65,7 +65,7 @@ begin
     SteamAPI_RunCallbacks();
     if SteamAPI_ISteamUserStats_GetAchievement(SteamUserStatsPtr, @AchievementString, AchReceived) then
       WriteLnLog('Achievement received without callback!');
-    AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
+    //AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
     {if AchNamePtr <> nil then
       WriteLnLog(AchNamePtr^);}
   end;
@@ -122,9 +122,10 @@ begin
       raise Exception.Create('Cannot get SteamUtils pointer');
 
     SteamUser := SteamAPI_ISteamClient_ConnectToGlobalUser(SteamClientPtr, SteamPipe);
-    WriteLnLog('SteamUser', IntToStr(SteamUser));
 
     SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
+    WriteLnLog('SteamUser', IntToStr(SteamAPI_ISteamUser_GetSteamID(SteamUserPtr)));
+
 
     // This SteamInternal_CreateInterface will return nil, you need to use SteamAPI_ISteamClient_GetISteamUser instead
     // SteamUserPtr := SteamInternal_CreateInterface(STEAMUSER_INTERFACE_VERSION);
