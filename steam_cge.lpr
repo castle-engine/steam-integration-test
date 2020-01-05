@@ -30,6 +30,9 @@ uses
   CastleUIControls,
   SteamApi, SteamCallback;
 
+const
+  AchievementString: AnsiString = 'ACH_WIN_ONE_GAME';
+
 type
   TSteamManager = class(TComponent)
   public
@@ -49,11 +52,18 @@ var
   SteamWorking: Boolean;
   SteamManager: TSteamManager;
   CallbackDispatcher: SteamCallbackDispatcher;
+  SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
 
 procedure DoUpdate(Container: TUiContainer);
+var
+  AchReceived: Boolean;
 begin
   if SteamWorking then
+  begin
     SteamAPI_RunCallbacks();
+    if SteamAPI_ISteamUserStats_GetAchievement(SteamClientPtr, @AchievementString, AchReceived) then
+      WriteLnLog('Achievement received without callback!');
+  end;
 end;
 
 procedure SteamWarning(nSeverity: Integer; pchDebugText: PAnsiChar); steam_call;
@@ -63,7 +73,6 @@ end;
 
 procedure SteamInitialize;
 var
-  SteamClientPtr, SteamUtilsPtr, SteamUserPtr: Pointer;
   SteamUser: THSteamUser;
   SteamPipe: THSteamPipe;
   LoginSuccessfull: Boolean;
