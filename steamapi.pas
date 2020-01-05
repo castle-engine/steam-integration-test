@@ -113,6 +113,7 @@ type
   TSteamAPIWarningMessageHook = procedure (nSeverity: Integer; pchDebugText: PAnsiChar); steam_call;
   THSteamPipe = CInt32;
   THSteamUser = CInt32;
+  THSteamApiCall = CInt32;
 
 function SteamAPI_Init(): CBool; steam_call; external SteamLib;
 procedure SteamAPI_Shutdown(); steam_call; external SteamLib;
@@ -141,6 +142,7 @@ function SteamAPI_ISteamUserStats_GetAchievement(InstancePtr: Pointer; pchName: 
 function SteamAPI_ISteamUserStats_GetAchievementName(InstancePtr: Pointer; iAchievement: CUInt32): PAnsiChar; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_ClearAchievement(InstancePtr: Pointer; pchName: PAnsiChar): CBool; steam_call; external SteamLib;
 function SteamAPI_ISteamUserStats_RequestCurrentStats(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
+//function SteamAPI_ISteamUserStats_RequestUserStats(InstancePtr: Pointer; class CSteamID steamIDUser): THSteamApiCall; steam_call; external SteamLib;
 
 function SteamAPI_ISteamUser_GetSteamID(InstancePtr: Pointer): CUInt32; steam_call; external SteamLib;
 function SteamAPI_ISteamUser_BLoggedOn(InstancePtr: Pointer): CBool; steam_call; external SteamLib;
@@ -150,6 +152,11 @@ procedure SteamAPI_RegisterCallback(pCallback: Pointer; iCallback: Integer); ste
 procedure SteamAPI_UnregisterCallback(pCallback: Pointer); steam_call; external SteamLib;
 
 function CUserStatsReceived_t_SetCallback(pCallback: Pointer): CUInt64; steam_call; external SteamLib;
+
+type
+  TProcedure = procedure();
+
+function SteamAPI_ISteamUtils_GetAPICallResult(InstancePtr: Pointer; hSteamAPICall: THSteamApiCall; pCallback: TProcedure; cubCallback: Integer; iCallbackExpected: Integer; pbFailed: CBool): CBool; steam_call; external SteamLib;
 
 implementation
 

@@ -48,7 +48,12 @@ end;
 
 procedure OnUserStats(Answer: Pointer);
 begin
-  WriteLnLog('TSteamManager.OnUserStats callback received!');
+  WriteLnLog('basic callback received!');
+end;
+
+procedure SomeProcedure();
+begin
+  WriteLnLog('aaaaaaaaaaaaaaaaaaaa callback received!');
 end;
 
 var
@@ -59,6 +64,8 @@ var
   CallbackDispatcher: SteamCallbackDispatcher;
   GameOverlayActivatedDispatcher: SteamCallbackDispatcher;
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr, SteamUserStatsPtr: Pointer;
+
+  CallbackH: THSteamApiCall;
 
 procedure DoUpdate(Container: TUiContainer);
 var
@@ -74,6 +81,8 @@ begin
     //AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
     {if AchNamePtr <> nil then
       WriteLnLog(AchNamePtr^);}
+    {if SteamAPI_ISteamUtils_GetAPICallResult(SteamUtilsPtr, CallbackH, @SomeProcedure, SizeOf(Steam_UserStatsReceived), k_iSteamUserStatsCallbacks + 1, AchReceived) then
+      WriteLnLog('Call back demanded manually');}
   end;
 end;
 
