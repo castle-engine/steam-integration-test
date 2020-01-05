@@ -130,6 +130,7 @@ End;
 
 Constructor SteamCallbackDispatcher.Create(iCallback:integer; callbackProc:SteamCallbackDelegate; A_propsize: integer);
 Begin
+  inherited Create;
   _CallbackID := iCallback;
   _Callback := callbackProc;
   _PropSize := A_propsize;
@@ -145,6 +146,7 @@ End;
 Destructor SteamCallbackDispatcher.Destroy;
 Begin
   SteamAPI_UnregisterCallback(@_SteamInterface);
+  inherited;
 End;
 
 Initialization
