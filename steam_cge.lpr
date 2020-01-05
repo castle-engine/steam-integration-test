@@ -46,6 +46,11 @@ begin
   WriteLnLog('TSteamManager.OnUserStats callback received!');
 end;
 
+procedure OnUserStats(Answer: Pointer);
+begin
+  WriteLnLog('TSteamManager.OnUserStats callback received!');
+end;
+
 var
   Window: TCastleWindowBase;
   Notifications: TCastleNotifications;
@@ -142,9 +147,11 @@ begin
     SteamUserStatsPtr := SteamAPI_ISteamClient_GetISteamUserStats(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
 
     SteamManager := TSteamManager.Create(Window);
-    CallbackDispatcher := SteamCallbackDispatcher.Create(k_iSteamUserStatsCallbacks + 1, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
+    {CallbackDispatcher := SteamCallbackDispatcher.Create(k_iSteamUserStatsCallbacks + 1, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
-    GameOverlayActivatedDispatcher := SteamCallbackDispatcher.Create(k_iSteamFriendsCallbacks + 31, @SteamManager.OnUserStats, SizeOf(Steam_GameOverlayActivated));
+    GameOverlayActivatedDispatcher := SteamCallbackDispatcher.Create(k_iSteamFriendsCallbacks + 31, @SteamManager.OnUserStats, SizeOf(Steam_GameOverlayActivated));}
+
+    CUserStatsReceived_t_SetCallback(@OnUserStats);
 
     if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamUserStatsPtr) then
       WriteLnLog('Requested user stats and achievements, waiting for callback...');

@@ -149,6 +149,8 @@ procedure SteamAPI_RunCallbacks(); external SteamLib;
 procedure SteamAPI_RegisterCallback(pCallback: Pointer; iCallback: Integer); steam_call; external SteamLib;
 procedure SteamAPI_UnregisterCallback(pCallback: Pointer); steam_call; external SteamLib;
 
+function CUserStatsReceived_t_SetCallback(pCallback: Pointer): CUInt64; steam_call; external SteamLib;
+
 implementation
 
 end.
