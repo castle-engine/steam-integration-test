@@ -112,6 +112,7 @@ const
 type
   TSteamAPIWarningMessageHook = procedure (nSeverity: Integer; pchDebugText: PAnsiChar); steam_call;
   THSteamPipe = CInt32;
+  TEAccountType = CInt32;
   THSteamUser = CInt32;
   THSteamApiCall = CInt32;
 
@@ -130,6 +131,7 @@ function SteamAPI_ISteamClient_GetISteamUtils(InstancePtr: Pointer; hSteamPipe: 
 function SteamAPI_ISteamClient_CreateSteamPipe(InstancePtr: Pointer): THSteamPipe; steam_call; external SteamLib;
 procedure SteamAPI_ISteamClient_SetWarningMessageHook(InstancePtr: Pointer; pFunction: TSteamAPIWarningMessageHook); steam_call; external SteamLib;
 function SteamAPI_ISteamClient_ConnectToGlobalUser(InstancePtr: Pointer; hSteamPipe: THSteamPipe): THSteamUser; steam_call; external SteamLib;
+function SteamAPI_ISteamClient_CreateLocalUser(InstancePtr: Pointer; hSteamPipe: THSteamPipe; eAccountType: TEAccountType): THSteamUser; steam_call; external SteamLib;
 function SteamAPI_ISteamClient_GetISteamUser(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 function SteamAPI_ISteamClient_GetISteamUserStats(InstancePtr: Pointer; hSteamUser: THSteamUser; hSteamPipe: THSteamPipe; pchVersion: PAnsiChar): Pointer; steam_call; external SteamLib;
 

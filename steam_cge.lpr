@@ -81,18 +81,18 @@ begin
     SteamAPI_RunCallbacks();
     if SteamAPI_ISteamUserStats_GetAchievement(SteamUserStatsPtr, @AchievementString, AchReceived) then
       WriteLnLog('Achievement received without callback!');
-    AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
+    //AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
     {if AchNamePtr <> nil then
       WriteLnLog(AchNamePtr^);}
     {if SteamAPI_ISteamUtils_GetAPICallResult(SteamUtilsPtr, CallbackH, @SomeProcedure, SizeOf(Steam_UserStatsReceived), k_iSteamUserStatsCallbacks + 1, AchReceived) then
       WriteLnLog('Call back demanded manually');}
 
-    {if (TimerSeconds(Timer, SendTimer) > 10) and (SendAchievement) then
+    if (TimerSeconds(Timer, SendTimer) > 25) and (SendAchievement) then
     begin
       SendAchievement := false;
       WriteLnLog('Sending achievement without callback... This is unsafe, but let''s try it');
       SteamAPI_ISteamUserStats_SetAchievement(SteamUserStatsPtr, @AchievementString[1]);
-    end; }
+    end;
   end;
 end;
 
@@ -147,6 +147,7 @@ begin
       raise Exception.Create('Cannot get SteamUtils pointer');
 
     SteamUser := SteamAPI_ISteamClient_ConnectToGlobalUser(SteamClientPtr, SteamPipe);
+    //SteamUser := SteamAPI_ISteamClient_CreateLocalUser(SteamClientPtr, SteamPipe, 1); SIGSEGV
 
     SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
 
@@ -155,8 +156,8 @@ begin
     if SteamUserPtr = nil then
       raise Exception.Create('Cannot get SteamUser pointer');
 
-    SteamUser := SteamAPI_ISteamUser_GetHSteamUser(SteamUserPtr);
-    SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
+    //SteamUser := SteamAPI_ISteamUser_GetHSteamUser(SteamUserPtr);
+    //SteamUserPtr := SteamAPI_ISteamClient_GetISteamUser(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
     WriteLnLog('SteamAPI_ISteamUser_GetSteamID', IntToStr(SteamAPI_ISteamUser_GetSteamID(SteamUserPtr)));
 
     Notifications.Show(Format('Steam App ID: %d', [SteamAPI_ISteamUtils_GetAppID(SteamUtilsPtr)]));
