@@ -27,7 +27,7 @@ program steam_cge;
 uses
   SysUtils, Classes,
   CastleWindow, CastleApplicationProperties, CastleLog, CastleStringUtils, CastleNotifications,
-  CastleUIControls,
+  CastleUIControls, CastleTimeUtils,
   SteamApi, SteamCallback;
 
 const
@@ -51,10 +51,10 @@ begin
   WriteLnLog('basic callback received!');
 end;
 
-procedure SomeProcedure();
+{procedure SomeProcedure();
 begin
   WriteLnLog('aaaaaaaaaaaaaaaaaaaa callback received!');
-end;
+end;}
 
 var
   Window: TCastleWindowBase;
@@ -64,6 +64,9 @@ var
   CallbackDispatcher: SteamCallbackDispatcher;
   GameOverlayActivatedDispatcher: SteamCallbackDispatcher;
   SteamClientPtr, SteamUtilsPtr, SteamUserPtr, SteamUserStatsPtr: Pointer;
+
+  SendAchievement: Boolean = true;
+  SendTimer: TTimerResult;
 
   CallbackH: THSteamApiCall;
 
@@ -78,11 +81,18 @@ begin
     SteamAPI_RunCallbacks();
     if SteamAPI_ISteamUserStats_GetAchievement(SteamUserStatsPtr, @AchievementString, AchReceived) then
       WriteLnLog('Achievement received without callback!');
-    //AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
+    AchNamePtr := SteamAPI_ISteamUserStats_GetAchievementName(SteamUserStatsPtr, 0);
     {if AchNamePtr <> nil then
       WriteLnLog(AchNamePtr^);}
     {if SteamAPI_ISteamUtils_GetAPICallResult(SteamUtilsPtr, CallbackH, @SomeProcedure, SizeOf(Steam_UserStatsReceived), k_iSteamUserStatsCallbacks + 1, AchReceived) then
       WriteLnLog('Call back demanded manually');}
+
+    {if (TimerSeconds(Timer, SendTimer) > 10) and (SendAchievement) then
+    begin
+      SendAchievement := false;
+      WriteLnLog('Sending achievement without callback... This is unsafe, but let''s try it');
+      SteamAPI_ISteamUserStats_SetAchievement(SteamUserStatsPtr, @AchievementString[1]);
+    end; }
   end;
 end;
 
@@ -156,14 +166,16 @@ begin
     SteamUserStatsPtr := SteamAPI_ISteamClient_GetISteamUserStats(SteamClientPtr, SteamUser, SteamPipe, STEAMUSER_INTERFACE_VERSION);
 
     SteamManager := TSteamManager.Create(Window);
-    {CallbackDispatcher := SteamCallbackDispatcher.Create(k_iSteamUserStatsCallbacks + 1, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
+    CallbackDispatcher := SteamCallbackDispatcher.Create(k_iSteamUserStatsCallbacks + 1, @SteamManager.OnUserStats, SizeOf(Steam_UserStatsReceived));
 
-    GameOverlayActivatedDispatcher := SteamCallbackDispatcher.Create(k_iSteamFriendsCallbacks + 31, @SteamManager.OnUserStats, SizeOf(Steam_GameOverlayActivated));}
+    {GameOverlayActivatedDispatcher := SteamCallbackDispatcher.Create(k_iSteamFriendsCallbacks + 31, @SteamManager.OnUserStats, SizeOf(Steam_GameOverlayActivated));}
 
-    CUserStatsReceived_t_SetCallback(@OnUserStats);
+    //CUserStatsReceived_t_SetCallback(@OnUserStats);
 
     if SteamAPI_ISteamUserStats_RequestCurrentStats(SteamUserStatsPtr) then
       WriteLnLog('Requested user stats and achievements, waiting for callback...');
+
+    SendTimer := Timer;
   end;
 end;
 
